@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Deluxe Place — Shodipe Adebola</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root{
+  --black:#0A0A0A;
+  --soft-black:#1A1A1A;
+  --white:#FFFFFF;
+  --off-white:#F5F0E8;
+  --gold:#C9A84C;
+  --gold-light:#E2C97E;
+  --grey:#6B6B6B;
+  --light-grey:#E8E8E8;
+  --cream:#FAF7F2;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--white);color:var(--black);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+img{display:block;width:100%;height:100%;object-fit:cover;}
+button{font-family:'DM Sans',sans-serif;}
+
+/* ── PARTICLES ── */
+#pc{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;}
+
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:1;min-height:100vh;}
+.page.active{display:block;animation:pageIn .5s ease forwards;}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.4rem 4rem;
+  transition:background .4s, padding .3s, border-color .4s;
+  border-bottom:1px solid transparent;
+}
+nav.dark{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom-color:rgba(201,168,76,.15);}
+nav.light{background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-bottom-color:rgba(0,0,0,.08);}
+nav.scrolled{padding:1rem 4rem;}
+
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;
+  background:none;border:none;color:inherit;
+  transition:color .3s;
+}
+nav.dark .nav-logo{color:var(--white);}
+nav.light .nav-logo{color:var(--black);}
+
+.nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center;}
+.nav-links li button{
+  background:none;border:none;cursor:pointer;
+  font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  font-family:'DM Sans',sans-serif;font-weight:500;
+  transition:color .2s, opacity .2s;
+  position:relative;padding-bottom:3px;
+}
+nav.dark .nav-links li button{color:rgba(255,255,255,.65);}
+nav.light .nav-links li button{color:rgba(10,10,10,.6);}
+.nav-links li button::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:1px;
+  background:var(--gold);transition:width .3s;
+}
+.nav-links li button:hover::after,
+.nav-links li button.active::after{width:100%;}
+nav.dark .nav-links li button:hover,
+nav.dark .nav-links li button.active{color:var(--white);}
+nav.light .nav-links li button:hover,
+nav.light .nav-links li button.active{color:var(--black);}
+
+.nav-order{
+  padding:.5rem 1.4rem;
+  border:1px solid var(--gold);
+  border-radius:0;
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  background:transparent;cursor:pointer;
+  transition:background .2s, color .2s;
+  color:var(--gold) !important;
+}
+.nav-order:hover{background:var(--gold);color:var(--black) !important;}
+.nav-order::after{display:none !important;}
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;z-index:300;}
+.hamburger span{display:block;width:22px;height:1.5px;transition:.3s;border-radius:1px;}
+nav.dark .hamburger span{background:var(--white);}
+nav.light .hamburger span{background:var(--black);}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px);}
+
+/* MOBILE MENU */
+.mob-menu{
+  display:none;position:fixed;inset:0;z-index:190;
+  background:var(--black);
+  flex-direction:column;align-items:center;justify-content:center;gap:2.8rem;
+}
+.mob-menu.open{display:flex;}
+.mob-menu button{
+  background:none;border:none;cursor:pointer;
+  font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;
+  color:rgba(255,255,255,.7);letter-spacing:.06em;
+  transition:color .2s;
+}
+.mob-menu button:hover,.mob-menu button.active{color:var(--white);}
+.mob-menu .mob-gold{
+  color:var(--gold) !important;
+  border:1px solid var(--gold);
+  padding:.7rem 2rem;font-size:1rem !important;
+  font-family:'DM Sans',sans-serif !important;
+  font-size:.8rem !important;letter-spacing:.2em;text-transform:uppercase;
+}
+.mob-foot{
+  position:absolute;bottom:2rem;
+  font-size:.7rem;color:rgba(255,255,255,.22);
+  letter-spacing:.18em;text-transform:uppercase;text-align:center;
+}
+
+/* ── HELPERS ── */
+.section-label{
+  font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:.35em;
+  color:var(--gold);margin-bottom:.9rem;display:block;
+}
+.display-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3rem,5.5vw,5.5rem);
+  font-weight:300;line-height:1.05;letter-spacing:-.01em;
+}
+.display-title em{font-style:italic;color:var(--gold);}
+.display-title.white{color:var(--white);}
+.display-title.black{color:var(--black);}
+.body-text{font-size:.95rem;line-height:1.82;color:var(--grey);}
+.max-w{max-width:1280px;margin:0 auto;}
+.pad{padding:7rem 4rem;}
+.pad-sm{padding:5rem 4rem;}
+
+/* gold rule — the signature element */
+.gold-rule{
+  width:1px;background:var(--gold);
+  position:absolute;left:4rem;top:0;bottom:0;
+  opacity:.4;
+}
+.gold-rule-h{
+  width:60px;height:1px;background:var(--gold);
+  display:inline-block;vertical-align:middle;margin-right:1.2rem;
+  opacity:.7;
+}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;}
+.rv.visible{opacity:1;transform:translateY(0);}
+.rv-left{opacity:0;transform:translateX(-22px);transition:opacity .7s ease,transform .7s ease;}
+.rv-left.visible{opacity:1;transform:translateX(0);}
+
+/* buttons */
+.btn-gold{
+  display:inline-block;padding:.85rem 2.6rem;
+  background:var(--gold);color:var(--black);
+  font-family:'DM Sans',sans-serif;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;font-weight:500;
+  border:none;cursor:pointer;
+  transition:background .2s,transform .2s;
+  text-decoration:none;
+}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-outline-white{
+  display:inline-block;padding:.85rem 2.6rem;
+  border:1px solid rgba(255,255,255,.4);color:var(--white);
+  font-family:'DM Sans',sans-serif;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  background:none;cursor:pointer;
+  transition:border-color .2s, background .2s;
+  text-decoration:none;
+}
+.btn-outline-white:hover{border-color:var(--gold);background:rgba(201,168,76,.08);}
+.btn-outline-dark{
+  display:inline-block;padding:.85rem 2.6rem;
+  border:1px solid rgba(10,10,10,.25);color:var(--black);
+  font-family:'DM Sans',sans-serif;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  background:none;cursor:pointer;
+  transition:border-color .2s,background .2s;
+  text-decoration:none;
+}
+.btn-outline-dark:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── KEYFRAMES ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0);}50%{box-shadow:0 0 20px 4px rgba(201,168,76,.2);}}
+@keyframes ruleGrow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+
+/* ══════════════════════════════════
+   HOME PAGE
+══════════════════════════════════ */
+
+/* HERO */
+.home-hero{
+  position:relative;height:100vh;min-height:640px;
+  display:flex;align-items:flex-end;
+  overflow:hidden;
+}
+.home-hero-img{position:absolute;inset:0;z-index:0;}
+.home-hero-img img{object-position:center 20%;}
+.home-hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(
+    to bottom,
+    rgba(10,10,10,.2) 0%,
+    rgba(10,10,10,.1) 40%,
+    rgba(10,10,10,.75) 75%,
+    rgba(10,10,10,.97) 100%
+  );
+}
+.gold-rule-hero{
+  position:absolute;left:4rem;top:0;width:1px;
+  background:linear-gradient(to bottom, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+  height:100%;z-index:2;opacity:.5;
+  transform-origin:top;animation:ruleGrow 1.4s .3s ease both;
+}
+.home-hero-content{
+  position:relative;z-index:3;
+  padding:0 4rem 5rem 7rem;
+  max-width:860px;
+}
+.home-hero-eyebrow{
+  display:flex;align-items:center;
+  font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:.4em;
+  color:var(--gold);margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp .7s .4s ease forwards;
+}
+.home-hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(4rem,8.5vw,8.5rem);
+  font-weight:300;line-height:.92;letter-spacing:-.02em;
+  color:var(--white);margin-bottom:1.8rem;
+  opacity:0;animation:fadeUp .8s .55s ease forwards;
+}
+.home-hero h1 em{
+  display:block;font-style:italic;
+  background:linear-gradient(90deg,var(--gold),var(--gold-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.home-hero-sub{
+  font-size:1rem;color:rgba(255,255,255,.55);font-weight:300;
+  max-width:420px;line-height:1.8;margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp .7s .7s ease forwards;
+}
+.home-hero-btns{
+  display:flex;gap:1.2rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .7s .85s ease forwards;
+}
+.hero-scroll-hint{
+  position:absolute;bottom:2.5rem;right:4rem;z-index:3;
+  display:flex;align-items:center;gap:.7rem;
+  font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);writing-mode:vertical-rl;
+}
+.hero-scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.3));}
+
+/* MARQUEE */
+.marquee-strip{
+  background:var(--black);border-top:1px solid rgba(201,168,76,.15);
+  border-bottom:1px solid rgba(201,168,76,.15);
+  padding:.85rem 0;overflow:hidden;position:relative;z-index:2;
+}
+.marquee-inner{display:flex;width:max-content;animation:marquee 28s linear infinite;white-space:nowrap;}
+.mq-item{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.25em;color:rgba(255,255,255,.35);padding:0 2rem;}
+.mq-dot{color:var(--gold);opacity:.6;padding:0 .3rem;}
+
+/* INTRO STRIP — dark to white */
+.intro-strip{
+  background:var(--black);
+  position:relative;overflow:hidden;
+}
+.intro-inner{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;min-height:580px;
+}
+.intro-img{position:relative;overflow:hidden;}
+.intro-img img{transition:transform .8s ease;}
+.intro-img:hover img{transform:scale(1.03);}
+.intro-text{
+  padding:5rem 5rem 5rem 5rem;
+  display:flex;flex-direction:column;justify-content:center;
+  border-left:1px solid rgba(201,168,76,.12);
+}
+.intro-text .display-title{margin:.8rem 0 1.5rem;}
+.intro-text .body-text{color:rgba(255,255,255,.45);margin-bottom:2rem;}
+
+/* FEATURED COLLECTIONS — white */
+.featured{background:var(--white);}
+.featured-header{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-bottom:3.5rem;flex-wrap:wrap;gap:1rem;
+}
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--light-grey);}
+.coll-card{
+  position:relative;overflow:hidden;
+  background:var(--white);cursor:pointer;
+  aspect-ratio:3/4;
+}
+.coll-card img{transition:transform .7s ease;}
+.coll-card:hover img{transform:scale(1.04);}
+.coll-card-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:2rem 1.8rem;
+  background:linear-gradient(to top,rgba(10,10,10,.88) 0%,transparent 100%);
+  transform:translateY(8px);transition:transform .3s;
+}
+.coll-card:hover .coll-card-info{transform:translateY(0);}
+.coll-card-info h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  font-weight:400;color:var(--white);letter-spacing:.04em;
+}
+.coll-card-info span{
+  font-family:'Bebas Neue',sans-serif;font-size:.72rem;
+  letter-spacing:.25em;color:var(--gold);display:block;margin-top:.3rem;
+}
+
+/* QUOTE STRIP — dark */
+.quote-strip{
+  background:var(--soft-black);
+  border-top:1px solid rgba(201,168,76,.1);
+  border-bottom:1px solid rgba(201,168,76,.1);
+}
+.quote-inner{
+  max-width:860px;margin:0 auto;text-align:center;
+  padding:6rem 4rem;
+}
+.quote-mark{
+  font-family:'Cormorant Garamond',serif;font-size:6rem;
+  color:var(--gold);opacity:.3;line-height:.5;
+  display:block;margin-bottom:1rem;
+}
+.quote-text{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.4rem);
+  font-weight:300;font-style:italic;color:var(--white);
+  line-height:1.5;letter-spacing:.02em;
+}
+.quote-attr{
+  display:block;margin-top:2rem;font-size:.72rem;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--gold);
+  font-family:'DM Sans',sans-serif;
+}
+
+/* STATS — white */
+.stats-strip{background:var(--cream);}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--light-grey);}
+.stat-block{
+  padding:3.5rem 2.5rem;text-align:center;
+  border-right:1px solid var(--light-grey);
+}
+.stat-block:last-child{border-right:none;}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;font-size:3.8rem;
+  font-weight:300;color:var(--black);line-height:1;letter-spacing:-.02em;
+}
+.stat-num span{color:var(--gold);}
+.stat-label{
+  font-family:'Bebas Neue',sans-serif;font-size:.75rem;
+  letter-spacing:.3em;color:var(--grey);margin-top:.5rem;display:block;
+}
+
+/* INSTAGRAM TEASER — dark */
+.ig-strip{background:var(--black);}
+.ig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3rem;}
+.ig-cell{
+  aspect-ratio:1;overflow:hidden;position:relative;cursor:pointer;
+}
+.ig-cell img{transition:transform .5s;}
+.ig-cell:hover img{transform:scale(1.06);}
+.ig-cell-overlay{
+  position:absolute;inset:0;background:rgba(201,168,76,.12);
+  opacity:0;transition:opacity .3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.ig-cell:hover .ig-cell-overlay{opacity:1;}
+.ig-cell-overlay span{color:var(--white);font-size:1.5rem;}
+
+/* HOME CTA */
+.home-cta{
+  background:var(--off-white);text-align:center;
+  border-top:1px solid var(--light-grey);
+}
+
+/* ══════════════════════════════════
+   ABOUT PAGE
+══════════════════════════════════ */
+.about-hero{
+  position:relative;height:70vh;min-height:500px;
+  display:flex;align-items:center;overflow:hidden;padding-top:80px;
+}
+.about-hero-img{position:absolute;inset:0;z-index:0;}
+.about-hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(to right,rgba(10,10,10,.88) 40%,rgba(10,10,10,.3) 100%);}
+.about-hero-content{position:relative;z-index:2;padding:0 4rem 0 7rem;max-width:720px;}
+.about-hero-content .display-title{margin:.8rem 0 1.5rem;}
+.about-hero-content .body-text{color:rgba(255,255,255,.5);max-width:440px;}
+
+.about-story{background:var(--white);}
+.about-story-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:center;}
+.about-story-img{height:580px;position:relative;overflow:hidden;}
+.about-story-img img{transition:transform .8s;}
+.about-story-img:hover img{transform:scale(1.03);}
+.about-story-img::after{
+  content:'';position:absolute;inset:0;
+  border:1px solid rgba(201,168,76,.25);
+  pointer-events:none;
+}
+.about-story-text .display-title{margin:.8rem 0 1.5rem;}
+.about-story-text .body-text{margin-bottom:1.2rem;}
+
+.about-philosophy{background:var(--black);}
+.phil-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,.1);margin-top:4rem;}
+.phil-card{
+  padding:3rem 2.5rem;background:var(--soft-black);
+  border-top:2px solid transparent;transition:border-color .3s;
+}
+.phil-card:hover{border-top-color:var(--gold);}
+.phil-num{
+  font-family:'Cormorant Garamond',serif;font-size:3.5rem;
+  color:rgba(201,168,76,.2);font-weight:300;line-height:1;
+  margin-bottom:1.2rem;
+}
+.phil-card h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  color:var(--white);font-weight:400;margin-bottom:.8rem;
+}
+.phil-card p{font-size:.88rem;color:rgba(255,255,255,.4);line-height:1.8;}
+
+/* ══════════════════════════════════
+   COLLECTIONS PAGE
+══════════════════════════════════ */
+.coll-page-hero{
+  background:var(--black);padding-top:140px;padding-bottom:4rem;
+  border-bottom:1px solid rgba(201,168,76,.12);
+  position:relative;
+}
+.coll-page-hero .gold-rule{transform-origin:top;animation:ruleGrow 1s ease forwards;}
+.coll-page-hero-inner{padding-left:7rem;}
+.coll-filter{display:flex;gap:1rem;margin-top:3rem;flex-wrap:wrap;}
+.coll-filter-btn{
+  padding:.5rem 1.5rem;border:1px solid rgba(255,255,255,.15);
+  background:none;color:rgba(255,255,255,.55);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.75rem;letter-spacing:.18em;
+  text-transform:uppercase;transition:all .2s;
+}
+.coll-filter-btn.active,.coll-filter-btn:hover{
+  border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.06);
+}
+
+.coll-page-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+  background:var(--light-grey);margin-top:2px;
+}
+.coll-item{
+  background:var(--white);position:relative;overflow:hidden;cursor:pointer;
+  aspect-ratio:3/4;
+}
+.coll-item img{transition:transform .7s;}
+.coll-item:hover img{transform:scale(1.04);}
+.coll-item-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:1.8rem;
+  background:linear-gradient(to top,rgba(10,10,10,.9),transparent);
+  transform:translateY(6px);transition:transform .3s;
+}
+.coll-item:hover .coll-item-info{transform:translateY(0);}
+.coll-item-info h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--white);font-weight:400;}
+.coll-item-info span{font-family:'Bebas Neue',sans-serif;font-size:.7rem;letter-spacing:.25em;color:var(--gold);}
+.coll-badge{
+  position:absolute;top:1rem;right:1rem;
+  padding:.28rem .8rem;background:var(--gold);
+  font-family:'DM Sans',sans-serif;font-size:.65rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--black);font-weight:500;
+}
+
+/* ══════════════════════════════════
+   LOOKBOOK PAGE
+══════════════════════════════════ */
+.lbook-hero{
+  background:var(--black);padding-top:130px;padding-bottom:3rem;
+  position:relative;
+}
+.lbook-hero .gold-rule{animation:ruleGrow 1s ease forwards;transform-origin:top;}
+.lbook-hero-inner{padding-left:7rem;}
+.lbook-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:320px;gap:3px;background:var(--black);}
+.lbook-cell{
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.lbook-cell.wide{grid-column:span 2;}
+.lbook-cell.tall{grid-row:span 2;}
+.lbook-cell img{transition:transform .7s;}
+.lbook-cell:hover img{transform:scale(1.05);}
+.lbook-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,10,10,.8),transparent 55%);
+  opacity:0;transition:opacity .35s;
+  display:flex;align-items:flex-end;padding:1.5rem;
+}
+.lbook-cell:hover .lbook-overlay{opacity:1;}
+.lbook-overlay span{
+  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  color:var(--white);font-style:italic;
+}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.95);align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;width:auto;height:auto;border:1px solid rgba(201,168,76,.15);}
+.lb-close{position:absolute;top:1.5rem;right:2rem;background:none;border:none;color:rgba(255,255,255,.5);font-size:1.8rem;cursor:pointer;letter-spacing:.1em;font-family:'DM Sans',sans-serif;}
+
+/* ══════════════════════════════════
+   ORDER PAGE
+══════════════════════════════════ */
+.order-page{padding-top:110px;background:var(--white);}
+.order-inner{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 110px);}
+.order-left{
+  background:var(--black);padding:5rem 4rem;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.order-left .gold-rule{animation:ruleGrow 1s ease forwards;transform-origin:top;}
+.order-left-content{padding-left:2rem;}
+.order-left .display-title{margin:.8rem 0 1.5rem;}
+.order-left .body-text{color:rgba(255,255,255,.45);margin-bottom:2rem;}
+.order-contact-list{list-style:none;display:flex;flex-direction:column;gap:1rem;margin-top:2rem;}
+.order-contact-list li a{
+  display:flex;align-items:center;gap:.8rem;
+  color:rgba(255,255,255,.5);text-decoration:none;font-size:.88rem;
+  transition:color .2s;
+}
+.order-contact-list li a:hover{color:var(--gold);}
+.order-contact-list li a span{font-size:1.1rem;}
+
+.order-right{padding:5rem 4rem;background:var(--cream);}
+.order-right h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.8rem;
+  font-weight:400;margin-bottom:2.5rem;color:var(--black);
+}
+.form-group{display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.4rem;}
+.form-group label{
+  font-family:'Bebas Neue',sans-serif;font-size:.72rem;
+  letter-spacing:.25em;color:var(--grey);
+}
+.form-group input,.form-group select,.form-group textarea{
+  background:var(--white);border:1px solid var(--light-grey);
+  padding:.85rem 1rem;color:var(--black);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;width:100%;
+  border-radius:0;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);}
+.form-group select option{background:var(--white);}
+.form-group textarea{resize:vertical;min-height:110px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.form-submit{
+  width:100%;padding:1rem;
+  background:var(--black);color:var(--white);
+  font-family:'DM Sans',sans-serif;font-size:.75rem;
+  letter-spacing:.22em;text-transform:uppercase;
+  border:none;cursor:pointer;transition:background .2s;
+  margin-top:.5rem;
+}
+.form-submit:hover{background:var(--gold);color:var(--black);}
+.form-note{font-size:.78rem;color:var(--grey);margin-top:.8rem;text-align:center;line-height:1.6;}
+
+/* ══════════════════════════════════
+   CONTACT PAGE
+══════════════════════════════════ */
+.contact-page{
+  min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:80px;
+}
+.contact-left{
+  background:var(--black);display:flex;flex-direction:column;
+  justify-content:center;padding:6rem 5rem;position:relative;
+}
+.contact-left .gold-rule{animation:ruleGrow 1.2s ease forwards;transform-origin:top;}
+.contact-left-content{padding-left:2rem;}
+.contact-left .display-title{margin:.8rem 0 1.5rem;}
+.contact-left .body-text{color:rgba(255,255,255,.45);margin-bottom:3rem;}
+.contact-detail{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.8rem;}
+.contact-detail-icon{font-size:1.1rem;margin-top:.1rem;color:var(--gold);}
+.contact-detail-text h4{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;font-family:'Bebas Neue',sans-serif;}
+.contact-detail-text a,.contact-detail-text p{font-size:.9rem;color:rgba(255,255,255,.55);text-decoration:none;line-height:1.7;}
+.contact-detail-text a:hover{color:var(--white);}
+.contact-socials{display:flex;gap:1.2rem;margin-top:2.5rem;}
+.social-link{
+  padding:.5rem 1.2rem;border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.45);text-decoration:none;
+  font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  font-family:'DM Sans',sans-serif;
+  transition:border-color .2s,color .2s;
+}
+.social-link:hover{border-color:var(--gold);color:var(--gold);}
+
+.contact-right{background:var(--off-white);display:flex;align-items:center;justify-content:center;}
+.contact-right-inner{width:100%;max-width:440px;padding:2rem;}
+.contact-right-inner h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:2rem;}
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+footer{
+  background:var(--black);
+  border-top:1px solid rgba(201,168,76,.12);
+  padding:4rem 4rem 2.5rem;
+  position:relative;z-index:1;
+}
+.footer-inner{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:3rem;padding-bottom:3rem;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.footer-brand-name{
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  font-weight:300;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--white);margin-bottom:.8rem;
+}
+.footer-brand p{font-size:.82rem;color:rgba(255,255,255,.3);line-height:1.8;max-width:240px;margin-top:.5rem;}
+.footer-col h4{
+  font-family:'Bebas Neue',sans-serif;font-size:.75rem;
+  letter-spacing:.3em;color:var(--gold);margin-bottom:1.2rem;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+.footer-col ul li button,.footer-col ul li a{
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:.82rem;
+  font-family:'DM Sans',sans-serif;text-decoration:none;
+  transition:color .2s;padding:0;text-align:left;
+}
+.footer-col ul li button:hover,.footer-col ul li a:hover{color:var(--gold);}
+.footer-copy{
+  max-width:1280px;margin:2rem auto 0;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;
+  font-size:.68rem;color:rgba(255,255,255,.18);letter-spacing:.08em;
+}
+.footer-copy-gold{color:var(--gold);opacity:.6;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px){
+  nav{padding:1rem 1.5rem;}nav.scrolled{padding:.8rem 1.5rem;}
+  .nav-links{display:none;}.hamburger{display:flex;}
+  .pad{padding:4rem 1.5rem;}.pad-sm{padding:3.5rem 1.5rem;}
+  .gold-rule{left:1.5rem;}.gold-rule-hero{left:1.5rem;}
+  .home-hero-content{padding:0 1.5rem 4rem 3.5rem;}
+  .intro-inner{grid-template-columns:1fr;}
+  .intro-img{height:350px;}
+  .intro-text{padding:3rem 2rem;}
+  .coll-grid{grid-template-columns:1fr 1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .ig-grid{grid-template-columns:repeat(2,1fr);}
+  .phil-grid{grid-template-columns:1fr;}
+  .about-story-inner{grid-template-columns:1fr;gap:2.5rem;}
+  .about-story-img{height:320px;}
+  .coll-page-hero-inner{padding-left:3.5rem;}
+  .coll-filter{padding:0 1.5rem;}
+  .coll-page-grid{grid-template-columns:1fr 1fr;}
+  .lbook-hero-inner{padding-left:3.5rem;}
+  .lbook-grid{grid-template-columns:1fr 1fr;grid-auto-rows:260px;}
+  .lbook-cell.wide{grid-column:span 1;}
+  .order-inner{grid-template-columns:1fr;}
+  .order-left{padding:3.5rem 2rem;}
+  .order-left-content{padding-left:1rem;}
+  .order-right{padding:3.5rem 2rem;}
+  .contact-page{grid-template-columns:1fr;}
+  .contact-left{padding:4rem 2rem;}
+  .contact-left-content{padding-left:1rem;}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:2rem;}
+  .about-hero-content{padding:0 1.5rem 0 3.5rem;}
+}
+@media(max-width:600px){
+  .coll-grid{grid-template-columns:1fr;}
+  .coll-page-grid{grid-template-columns:1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .stat-block{padding:2.5rem 1.5rem;}
+  .ig-grid{grid-template-columns:repeat(2,1fr);}
+  .lbook-grid{grid-template-columns:1fr;grid-auto-rows:280px;}
+  .lbook-cell.tall{grid-row:span 1;}
+  .form-row{grid-template-columns:1fr;}
+  .footer-inner{grid-template-columns:1fr;}
+  footer{padding:3rem 1.5rem 2rem;}
+  .home-hero h1{font-size:clamp(3.2rem,14vw,5rem);}
+}
+</style>
+</head>
+<body>
+
+<canvas id="pc"></canvas>
+
+<!-- ════ NAV ════ -->
+<nav id="navbar" class="dark">
+  <button class="nav-logo" onclick="showPage('home')">The Deluxe Place</button>
+  <ul class="nav-links">
+    <li><button onclick="showPage('home')" data-page="home" class="active">Home</button></li>
+    <li><button onclick="showPage('about')" data-page="about">About</button></li>
+    <li><button onclick="showPage('collections')" data-page="collections">Collections</button></li>
+    <li><button onclick="showPage('lookbook')" data-page="lookbook">Lookbook</button></li>
+    <li><button onclick="showPage('contact')" data-page="contact">Contact</button></li>
+    <li><button onclick="showPage('order')" class="nav-order" data-page="order">Order Now</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ════ MOBILE MENU ════ -->
+<div class="mob-menu" id="mobMenu">
+  <button onclick="go('home')">Home</button>
+  <button onclick="go('about')">About</button>
+  <button onclick="go('collections')">Collections</button>
+  <button onclick="go('lookbook')">Lookbook</button>
+  <button onclick="go('contact')">Contact</button>
+  <button onclick="go('order')" class="mob-gold">Order Now</button>
+  <div class="mob-foot">The Deluxe Place · Shodipe Adebola</div>
+</div>
+
+<!-- ════════════════════════════════
+     HOME
+════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <section class="home-hero">
+    <div class="home-hero-img">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1800&q=85" alt="Luxury fashion editorial">
+    </div>
+    <div class="home-hero-overlay"></div>
+    <div class="gold-rule-hero"></div>
+    <div class="home-hero-content">
+      <div class="home-hero-eyebrow"><span class="gold-rule-h"></span>Premium Connoisseur · Lagos</div>
+      <h1>Dress with<em>Intention.</em></h1>
+      <p class="home-hero-sub">Curated luxury pieces for the man who understands that how you dress is how you announce yourself to the world — before you speak.</p>
+      <div class="home-hero-btns">
+        <button onclick="showPage('collections')" class="btn-gold">View Collections</button>
+        <button onclick="showPage('about')" class="btn-outline-white">The Story</button>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <div class="hero-scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <div class="marquee-strip">
+    <div class="marquee-inner" id="mq">
+      <span class="mq-item">Bespoke Tailoring</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Premium Menswear</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Luxury Fabrics</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Curated Style</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Lagos · Nigeria</span><span class="mq-dot">◆</span>
+      <span class="mq-item">The Deluxe Place</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Shodipe Adebola</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Bespoke Tailoring</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Premium Menswear</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Luxury Fabrics</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Curated Style</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Lagos · Nigeria</span><span class="mq-dot">◆</span>
+      <span class="mq-item">The Deluxe Place</span><span class="mq-dot">◆</span>
+      <span class="mq-item">Shodipe Adebola</span><span class="mq-dot">◆</span>
+    </div>
+  </div>
+
+  <section class="intro-strip">
+    <div class="intro-inner">
+      <div class="intro-img">
+        <img src="images/shodipeAdebola.jpg" alt="Shodipe Adebola">
+      </div>
+      <div class="intro-text">
+        <span class="section-label">The Connoisseur</span>
+        <h2 class="display-title white">Style is not what you <em>wear.</em> It's what you know.</h2>
+        <p class="body-text">Shodipe Adebola has spent years curating the finest pieces in menswear — from hand-embroidered native wear to sharp European cuts. The Deluxe Place is his personal edit of the world's best, brought home to Lagos.</p>
+        <button onclick="showPage('about')" class="btn-outline-white" style="margin-top:.5rem;">Read His Story</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pad featured">
+    <div class="max-w">
+      <div class="featured-header">
+        <div>
+          <span class="section-label">Featured</span>
+          <h2 class="display-title black">The Current <em>Edit</em></h2>
+        </div>
+        <button onclick="showPage('collections')" class="btn-outline-dark">All Collections →</button>
+      </div>
+      <div class="coll-grid">
+        <div class="coll-card rv" onclick="showPage('collections')">
+          <img src="images/luxurynative.jpg" alt="Native luxury wear">
+          <div class="coll-card-info">
+            <h3>Native Luxury</h3>
+            <span>Agbada · Kaftan · Senator</span>
+          </div>
+        </div>
+        <div class="coll-card rv" onclick="showPage('collections')">
+          <img src="images/bespokesuit.jpg" alt="Bespoke suits">
+          <div class="coll-card-info">
+            <h3>Bespoke Suiting</h3>
+            <span>Made to Measure · Tailored</span>
+          </div>
+        </div>
+        <div class="coll-card rv" onclick="showPage('collections')">
+          <img src="images/12.jpg" alt="Editorial fashion">
+          <div class="coll-card-info">
+            <h3>The Deluxe Edit</h3>
+            <span>Curated · Statement Pieces</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-strip">
+    <div class="quote-inner rv">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">The best-dressed man in the room is never the loudest. He's the one who understood the assignment before he arrived.</p>
+      <span class="quote-attr">— Shodipe Adebola, The Deluxe Place</span>
+    </div>
+  </section>
+
+  <section class="pad-sm stats-strip">
+    <div class="max-w">
+      <div class="stats-inner">
+        <div class="stat-block rv">
+          <div class="stat-num">33<span>K+</span></div>
+          <span class="stat-label">Community Members</span>
+        </div>
+        <div class="stat-block rv">
+          <div class="stat-num">3.5<span>K+</span></div>
+          <span class="stat-label">Curated Posts</span>
+        </div>
+        <div class="stat-block rv">
+          <div class="stat-num">5<span>+</span></div>
+          <span class="stat-label">Years of Expertise</span>
+        </div>
+        <div class="stat-block rv">
+          <div class="stat-num">100<span>%</span></div>
+          <span class="stat-label">Premium Quality</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pad ig-strip">
+    <div class="max-w">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <span class="section-label">Instagram</span>
+          <h2 class="display-title white">Follow <em>@thedeluxeplace</em></h2>
+        </div>
+        <a href="https://www.instagram.com/thedeluxeplace/" target="_blank" class="btn-outline-white">Follow on Instagram</a>
+      </div>
+      <div class="ig-grid">
+        <div class="ig-cell"><img src="images/2.jpg" alt="style"><div class="ig-cell-overlay"><span>♥</span></div></div>
+        <div class="ig-cell"><img src="images/4.jpg" alt="portrait"><div class="ig-cell-overlay"><span>♥</span></div></div>
+        <div class="ig-cell"><img src="images/5.jpg" alt="native"><div class="ig-cell-overlay"><span>♥</span></div></div>
+        <div class="ig-cell"><img src="images/8.jpg" alt="suit"><div class="ig-cell-overlay"><span>♥</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pad home-cta">
+    <div class="max-w" style="text-align:center;max-width:680px;">
+      <span class="section-label" style="color:var(--grey);">Ready to Dress Deluxe?</span>
+      <h2 class="display-title black" style="margin:.5rem 0 1.2rem;">Your next signature <em>piece</em> awaits.</h2>
+      <p class="body-text" style="margin:0 auto 2.5rem;max-width:480px;">Whether you're ordering a custom native, a bespoke suit, or curating your wardrobe from scratch — The Deluxe Place is where it begins.</p>
+      <button onclick="showPage('order')" class="btn-gold">Place an Order</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-name">The Deluxe Place</div>
+        <div style="width:40px;height:1px;background:var(--gold);opacity:.5;margin:.3rem 0 .8rem;"></div>
+        <p>Premium menswear curated by Shodipe Adebola. Lagos, Nigeria. Worldwide delivery available.</p>
+      </div>
+      <div class="footer-col"><h4>Navigate</h4><ul>
+        <li><button onclick="showPage('home')">Home</button></li>
+        <li><button onclick="showPage('about')">About</button></li>
+        <li><button onclick="showPage('collections')">Collections</button></li>
+        <li><button onclick="showPage('lookbook')">Lookbook</button></li>
+        <li><button onclick="showPage('order')">Order</button></li>
+        <li><button onclick="showPage('contact')">Contact</button></li>
+      </ul></div>
+      <div class="footer-col"><h4>Collections</h4><ul>
+        <li><button onclick="showPage('collections')">Native Luxury</button></li>
+        <li><button onclick="showPage('collections')">Bespoke Suiting</button></li>
+        <li><button onclick="showPage('collections')">The Deluxe Edit</button></li>
+        <li><button onclick="showPage('collections')">Accessories</button></li>
+      </ul></div>
+      <div class="footer-col"><h4>Connect</h4><ul>
+        <li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">Instagram</a></li>
+        <li><a href="https://wa.me/2348000000000" target="_blank">WhatsApp</a></li>
+        <li><a href="mailto:hello@thedeluxeplace.com">Email Us</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-copy">
+      <span>© 2025 The Deluxe Place · Shodipe Adebola · Lagos, Nigeria</span>
+      <span class="footer-copy-gold">Dressed with intention.</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     ABOUT
+════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="about-hero-img"><img src="images/ShodipeAdebola2.jpg" alt="Editorial portrait"></div>
+    <div class="about-hero-overlay"></div>
+    <div class="gold-rule"></div>
+    <div class="about-hero-content">
+      <span class="section-label">The Man Behind the Brand</span>
+      <h1 class="display-title white">Shodipe <em>Adebola.</em></h1>
+      <p class="body-text" style="color:rgba(255,255,255,.5);">Premium connoisseur. Style architect. Lagos-based curator of the world's finest menswear.</p>
+    </div>
+  </div>
+
+  <section class="pad about-story">
+    <div class="max-w about-story-inner">
+      <div class="about-story-img rv-left"><img src="images/4.jpg" alt="Shodipe portrait"></div>
+      <div class="about-story-text">
+        <span class="section-label">The Story</span>
+        <h2 class="display-title black">Built on <em>taste,</em> refined by time.</h2>
+        <p class="body-text rv">Shodipe Adebola didn't set out to build a brand. He set out to dress well — and discovered, along the way, that truly dressing well is a discipline, not an accident.</p>
+        <p class="body-text rv">Over years of sourcing, styling, and studying the language of luxury menswear, he built The Deluxe Place as an extension of his own eye. Every piece that enters his edit has passed a rigorous personal standard: quality of material, integrity of construction, strength of silhouette.</p>
+        <p class="body-text rv">With over 33,000 followers and a community of men who trust his taste, The Deluxe Place has become Lagos' most respected personal styling destination — all built without a website, through sheer consistency and conviction.</p>
+        <button onclick="showPage('order')" class="btn-gold" style="margin-top:2rem;">Work With Shodipe</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pad about-philosophy">
+    <div class="max-w">
+      <span class="section-label">The Philosophy</span>
+      <h2 class="display-title white" style="max-width:600px;">Three things Shodipe <em>never</em> compromises on.</h2>
+      <div class="phil-grid">
+        <div class="phil-card rv"><div class="phil-num">I</div><h3>Fabric Integrity</h3><p>Every piece begins with material. The fabric must breathe, hold, and age with grace. There are no shortcuts here — what touches your skin defines your experience.</p></div>
+        <div class="phil-card rv"><div class="phil-num">II</div><h3>Precise Fit</h3><p>A premium piece on the wrong body tells the wrong story. The Deluxe Place insists on fit — whether bespoke tailoring or careful curation of ready-to-wear sizing.</p></div>
+        <div class="phil-card rv"><div class="phil-num">III</div><h3>Intentional Occasion</h3><p>Every piece should have a purpose. Not just "where will I wear this?" but "what will I communicate when I do?" Style is communication before conversation.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-brand-name">The Deluxe Place</div><div style="width:40px;height:1px;background:var(--gold);opacity:.5;margin:.3rem 0 .8rem;"></div><p>Premium menswear curated by Shodipe Adebola. Lagos, Nigeria.</p></div>
+      <div class="footer-col"><h4>Navigate</h4><ul><li><button onclick="showPage('home')">Home</button></li><li><button onclick="showPage('about')">About</button></li><li><button onclick="showPage('collections')">Collections</button></li><li><button onclick="showPage('lookbook')">Lookbook</button></li><li><button onclick="showPage('order')">Order</button></li><li><button onclick="showPage('contact')">Contact</button></li></ul></div>
+      <div class="footer-col"><h4>Collections</h4><ul><li><button onclick="showPage('collections')">Native Luxury</button></li><li><button onclick="showPage('collections')">Bespoke Suiting</button></li><li><button onclick="showPage('collections')">The Deluxe Edit</button></li></ul></div>
+      <div class="footer-col"><h4>Connect</h4><ul><li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">Instagram</a></li><li><a href="https://wa.me/2348000000000" target="_blank">WhatsApp</a></li></ul></div>
+    </div>
+    <div class="footer-copy"><span>© 2025 The Deluxe Place · Shodipe Adebola · Lagos, Nigeria</span><span class="footer-copy-gold">Dressed with intention.</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     COLLECTIONS
+════════════════════════════════ -->
+<div class="page" id="page-collections">
+  <div class="coll-page-hero">
+    <div class="gold-rule"></div>
+    <div class="coll-page-hero-inner">
+      <span class="section-label">The Wardrobe</span>
+      <h1 class="display-title white">Collections</h1>
+      <p class="body-text" style="color:rgba(255,255,255,.4);max-width:480px;margin-top:.8rem;">Every piece is chosen with one question in mind: does this make the man wearing it undeniable?</p>
+      <div class="coll-filter">
+        <button class="coll-filter-btn active" onclick="filterColl('all',this)">All</button>
+        <button class="coll-filter-btn" onclick="filterColl('native',this)">Native Luxury</button>
+        <button class="coll-filter-btn" onclick="filterColl('suits',this)">Bespoke Suiting</button>
+        <button class="coll-filter-btn" onclick="filterColl('edit',this)">Deluxe Edit</button>
+        <button class="coll-filter-btn" onclick="filterColl('access',this)">Accessories</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="coll-page-grid" id="collGrid">
+    <div class="coll-item" data-cat="native">
+      <img src="images/agbada.jpg" alt="Agbada royal">
+      <div class="coll-badge">New</div>
+      <div class="coll-item-info"><h4>Royal Agbada</h4><span>Native Luxury</span></div>
+    </div>
+    <div class="coll-item" data-cat="native">
+      <img src="images/kaftan.jpg" alt="Kaftan premium">
+      <div class="coll-item-info"><h4>Premium Kaftan</h4><span>Native Luxury</span></div>
+    </div>
+    <div class="coll-item" data-cat="suits">
+      <img src="images/bespokesuit.jpg" alt="Bespoke suit">
+      <div class="coll-badge">Bespoke</div>
+      <div class="coll-item-info"><h4>The Boardroom Suit</h4><span>Bespoke Suiting</span></div>
+    </div>
+    <div class="coll-item" data-cat="suits">
+      <img src="images/doublebreasted.jpg" alt="Double breasted">
+      <div class="coll-item-info"><h4>Double Breasted Cut</h4><span>Bespoke Suiting</span></div>
+    </div>
+    <div class="coll-item" data-cat="edit">
+      <img src="images/statementovercoat.jpg" alt="Editorial piece">
+      <div class="coll-badge">Limited</div>
+      <div class="coll-item-info"><h4>Statement Overcoat</h4><span>Deluxe Edit</span></div>
+    </div>
+    <div class="coll-item" data-cat="edit">
+      <img src="images/9.jpg" alt="Curated piece">
+      <div class="coll-item-info"><h4>The Curated Ensemble</h4><span>Deluxe Edit</span></div>
+    </div>
+    <div class="coll-item" data-cat="native">
+      <img src="images/luxurynative.jpg" alt="Senator style">
+      <div class="coll-item-info"><h4>Senator Wear</h4><span>Native Luxury</span></div>
+    </div>
+    <div class="coll-item" data-cat="access">
+      <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=700&q=80" alt="Luxury bag">
+      <div class="coll-item-info"><h4>Leather Carryall</h4><span>Accessories</span></div>
+    </div>
+    <div class="coll-item" data-cat="access">
+      <img src="images/1.jpg" alt="Luxury watch">
+      <div class="coll-badge">Curated</div>
+      <div class="coll-item-info"><h4>Statement Timepiece</h4><span>Accessories</span></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-brand-name">The Deluxe Place</div><div style="width:40px;height:1px;background:var(--gold);opacity:.5;margin:.3rem 0 .8rem;"></div><p>Premium menswear curated by Shodipe Adebola. Lagos, Nigeria.</p></div>
+      <div class="footer-col"><h4>Navigate</h4><ul><li><button onclick="showPage('home')">Home</button></li><li><button onclick="showPage('about')">About</button></li><li><button onclick="showPage('collections')">Collections</button></li><li><button onclick="showPage('lookbook')">Lookbook</button></li><li><button onclick="showPage('order')">Order</button></li><li><button onclick="showPage('contact')">Contact</button></li></ul></div>
+      <div class="footer-col"><h4>Collections</h4><ul><li><button onclick="filterColl('native',document.querySelector('.coll-filter-btn'));showPage('collections')">Native Luxury</button></li><li><button onclick="showPage('collections')">Bespoke Suiting</button></li><li><button onclick="showPage('collections')">The Deluxe Edit</button></li></ul></div>
+      <div class="footer-col"><h4>Connect</h4><ul><li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">Instagram</a></li><li><a href="https://wa.me/2348000000000" target="_blank">WhatsApp</a></li></ul></div>
+    </div>
+    <div class="footer-copy"><span>© 2025 The Deluxe Place · Shodipe Adebola · Lagos, Nigeria</span><span class="footer-copy-gold">Dressed with intention.</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     LOOKBOOK
+════════════════════════════════ -->
+<div class="page" id="page-lookbook">
+  <div class="lbook-hero pad-sm">
+    <div class="gold-rule"></div>
+    <div class="lbook-hero-inner">
+      <span class="section-label">Editorial</span>
+      <h1 class="display-title white">The <em>Lookbook</em></h1>
+      <p class="body-text" style="color:rgba(255,255,255,.4);margin-top:.8rem;max-width:420px;">Style distilled into image. Every frame is a lesson in what it means to dress with intention.</p>
+    </div>
+  </div>
+  <div class="lbook-grid" id="lookbookGrid">
+    <div class="lbook-cell wide tall" onclick="openLB(this)">
+      <img src="images/4.jpg"Editorial fashion spread">
+      <div class="lbook-overlay"><span>The Connoisseur's Edit</span></div>
+    </div>
+    <div class="lbook-cell" onclick="openLB(this)">
+      <img src="images/7.jpg" alt="Portrait">
+      <div class="lbook-overlay"><span>Presence</span></div>
+    </div>
+    <div class="lbook-cell" onclick="openLB(this)">
+      <img src="images/11.jpg" alt="Native">
+      <div class="lbook-overlay"><span>Heritage</span></div>
+    </div>
+    <div class="lbook-cell" onclick="openLB(this)">
+      <img src="images/2.jpg" alt="Suit">
+      <div class="lbook-overlay"><span>Authority</span></div>
+    </div>
+    <div class="lbook-cell tall" onclick="openLB(this)">
+      <img src="images/9.jpg" alt="Statement">
+      <div class="lbook-overlay"><span>Statement</span></div>
+    </div>
+    <div class="lbook-cell" onclick="openLB(this)">
+      <img src="images/3.jpg" alt="Tailored">
+      <div class="lbook-overlay"><span>Precision</span></div>
+    </div>
+    <div class="lbook-cell" onclick="openLB(this)">
+      <img src="images/12.jpg" alt="Sharp">
+      <div class="lbook-overlay"><span>Sharp</span></div>
+    </div>
+    <div class="lbook-cell wide" onclick="openLB(this)">
+      <img src="images/8.jpg" alt="Full look">
+      <div class="lbook-overlay"><span>The Full Look</span></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-brand-name">The Deluxe Place</div><div style="width:40px;height:1px;background:var(--gold);opacity:.5;margin:.3rem 0 .8rem;"></div><p>Premium menswear curated by Shodipe Adebola. Lagos, Nigeria.</p></div>
+      <div class="footer-col"><h4>Navigate</h4><ul><li><button onclick="showPage('home')">Home</button></li><li><button onclick="showPage('about')">About</button></li><li><button onclick="showPage('collections')">Collections</button></li><li><button onclick="showPage('lookbook')">Lookbook</button></li><li><button onclick="showPage('order')">Order</button></li><li><button onclick="showPage('contact')">Contact</button></li></ul></div>
+      <div class="footer-col"><h4>Collections</h4><ul><li><button onclick="showPage('collections')">Native Luxury</button></li><li><button onclick="showPage('collections')">Bespoke Suiting</button></li><li><button onclick="showPage('collections')">The Deluxe Edit</button></li></ul></div>
+      <div class="footer-col"><h4>Connect</h4><ul><li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">Instagram</a></li><li><a href="https://wa.me/2348000000000" target="_blank">WhatsApp</a></li></ul></div>
+    </div>
+    <div class="footer-copy"><span>© 2025 The Deluxe Place · Shodipe Adebola · Lagos, Nigeria</span><span class="footer-copy-gold">Dressed with intention.</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     ORDER
+════════════════════════════════ -->
+<div class="page" id="page-order">
+  <div class="order-inner">
+    <div class="order-left">
+      <div class="gold-rule"></div>
+      <div class="order-left-content">
+        <span class="section-label">Place an Order</span>
+        <h2 class="display-title white">Let's build your <em>look.</em></h2>
+        <p class="body-text" style="color:rgba(255,255,255,.45);">Whether you're commissioning a bespoke native, a tailored suit, or curating a full wardrobe — this is where it begins. Fill the form or reach us directly.</p>
+        <ul class="order-contact-list">
+          <li><a href="https://wa.me/message/F3IRKB4UQ6EBI1" target="_blank"><span>💬</span> WhatsApp Shodipe directly</a></li>
+          <li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank"><span>📸</span> DM on Instagram</a></li>
+          <li><a href="mailto:hello@thedeluxeplace.com"><span>✉️</span> hello@thedeluxeplace.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="order-right">
+      <h3>Order Enquiry</h3>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Emeka"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Okonkwo"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" placeholder="+234 800 000 0000"></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="emeka@email.com"></div>
+      </div>
+      <div class="form-group"><label>What are you ordering?</label>
+        <select><option value="">Select category</option><option>Agbada</option><option>Kaftan</option><option>Senator Wear</option><option>Bespoke Suit</option><option>Ready-to-Wear</option><option>Accessories</option><option>Full Wardrobe Curation</option></select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Occasion</label>
+          <select><option value="">Select occasion</option><option>Wedding / Traditional</option><option>Corporate / Business</option><option>Social Event</option><option>Everyday Luxury</option><option>Other</option></select>
+        </div>
+        <div class="form-group"><label>Budget Range</label>
+          <select><option value="">Select range</option><option>₦100k – ₦250k</option><option>₦250k – ₦500k</option><option>₦500k – ₦1M</option><option>₦1M+</option><option>Let's discuss</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Tell Shodipe More</label><textarea placeholder="Describe what you have in mind — occasion, style references, colours, measurements if available..."></textarea></div>
+      <button class="form-submit" onclick="handleOrder(this)">Submit Enquiry</button>
+      <p class="form-note">We'll respond within 24 hours via WhatsApp or email. All orders are personally reviewed by Shodipe.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-brand-name">The Deluxe Place</div><div style="width:40px;height:1px;background:var(--gold);opacity:.5;margin:.3rem 0 .8rem;"></div><p>Premium menswear curated by Shodipe Adebola. Lagos, Nigeria.</p></div>
+      <div class="footer-col"><h4>Navigate</h4><ul><li><button onclick="showPage('home')">Home</button></li><li><button onclick="showPage('about')">About</button></li><li><button onclick="showPage('collections')">Collections</button></li><li><button onclick="showPage('lookbook')">Lookbook</button></li><li><button onclick="showPage('order')">Order</button></li><li><button onclick="showPage('contact')">Contact</button></li></ul></div>
+      <div class="footer-col"><h4>Collections</h4><ul><li><button onclick="showPage('collections')">Native Luxury</button></li><li><button onclick="showPage('collections')">Bespoke Suiting</button></li><li><button onclick="showPage('collections')">The Deluxe Edit</button></li></ul></div>
+      <div class="footer-col"><h4>Connect</h4><ul><li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">Instagram</a></li><li><a href="https://wa.me/2348000000000" target="_blank">WhatsApp</a></li></ul></div>
+    </div>
+    <div class="footer-copy"><span>© 2025 The Deluxe Place · Shodipe Adebola · Lagos, Nigeria</span><span class="footer-copy-gold">Dressed with intention.</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     CONTACT
+════════════════════════════════ -->
+<div class="page" id="page-contact">
+  <div class="contact-page">
+    <div class="contact-left">
+      <div class="gold-rule"></div>
+      <div class="contact-left-content">
+        <span class="section-label">Get in Touch</span>
+        <h2 class="display-title white">Let's <em>talk</em> style.</h2>
+        <p class="body-text" style="color:rgba(255,255,255,.45);margin-bottom:2.5rem;">For orders, collaborations, press enquiries or just a conversation about dressing well — Shodipe is listening.</p>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📍</span>
+          <div class="contact-detail-text"><h4>Location</h4><p>No 68 , Adeniran Ogunsanya, Surulere Lagos. Nigeria · Worldwide Delivery</p></div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">💬</span>
+          <div class="contact-detail-text"><h4>WhatsApp</h4><a href="https://wa.me/message/F3IRKB4UQ6EBI1" target="_blank">Chat with Shodipe</a></div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">✉️</span>
+          <div class="contact-detail-text"><h4>Email</h4><a href="mailto:hello@thedeluxeplace.com">hello@thedeluxeplace.com</a></div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📸</span>
+          <div class="contact-detail-text"><h4>Instagram</h4><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">@thedeluxeplace</a></div>
+        </div>
+        <div class="contact-socials">
+          <a href="https://www.instagram.com/thedeluxeplace/" target="_blank" class="social-link">Instagram</a>
+          <a href="https://wa.me/message/F3IRKB4UQ6EBI1" target="_blank" class="social-link">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <div class="contact-right-inner">
+        <h3>Send a Message</h3>
+        <div class="form-group"><label>Your Name</label><input type="text" placeholder="Tunde Adeyemi"></div>
+        <div class="form-group"><label>Email or WhatsApp</label><input type="text" placeholder="your@email.com or +234..."></div>
+        <div class="form-group"><label>Subject</label>
+          <select><option value="">Select topic</option><option>Place an Order</option><option>Collaboration</option><option>Press / Media</option><option>General Enquiry</option></select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea placeholder="What's on your mind?"></textarea></div>
+        <button class="form-submit" onclick="handleContact(this)">Send Message</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-brand-name">The Deluxe Place</div><div style="width:40px;height:1px;background:var(--gold);opacity:.5;margin:.3rem 0 .8rem;"></div><p>Premium menswear curated by Shodipe Adebola. Lagos, Nigeria.</p></div>
+      <div class="footer-col"><h4>Navigate</h4><ul><li><button onclick="showPage('home')">Home</button></li><li><button onclick="showPage('about')">About</button></li><li><button onclick="showPage('collections')">Collections</button></li><li><button onclick="showPage('lookbook')">Lookbook</button></li><li><button onclick="showPage('order')">Order</button></li><li><button onclick="showPage('contact')">Contact</button></li></ul></div>
+      <div class="footer-col"><h4>Collections</h4><ul><li><button onclick="showPage('collections')">Native Luxury</button></li><li><button onclick="showPage('collections')">Bespoke Suiting</button></li><li><button onclick="showPage('collections')">The Deluxe Edit</button></li></ul></div>
+      <div class="footer-col"><h4>Connect</h4><ul><li><a href="https://www.instagram.com/thedeluxeplace/" target="_blank">Instagram</a></li><li><a href="https://wa.me/message/F3IRKB4UQ6EBI1" target="_blank">WhatsApp</a></li></ul></div>
+    </div>
+    <div class="footer-copy"><span>© 2026 The Deluxe Place · Shodipe Adebola · Lagos, Nigeria</span><span class="footer-copy-gold">Dressed with intention.</span></div>
+  </footer>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lb" onclick="closeLB(event)">
+  <button class="lb-close" onclick="closeLB()">✕ Close</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<script>
+/* ── PARTICLES ── */
+const pc=document.getElementById('pc'),ctx=pc.getContext('2d');
+let W,H,mouse={x:-9e4,y:-9e4};
+const COLS=['#C9A84C','#E2C97E','rgba(201,168,76,.3)','rgba(255,255,255,.15)'];
+let parts=[];
+function resize(){W=pc.width=window.innerWidth;H=pc.height=window.innerHeight;}
+class P{
+  constructor(){this.reset(1);}
+  reset(r){
+    this.x=r?Math.random()*W:W/2;this.y=r?Math.random()*H:H/2;
+    this.vx=(Math.random()-.5)*.35;this.vy=(Math.random()-.5)*.35;
+    this.r=Math.random()*1.8+.4;this.alpha=.25;
+    this.col=COLS[Math.floor(Math.random()*COLS.length)];
+    this.life=Math.random()*400+200;this.age=0;
+  }
+  update(){
+    const dx=mouse.x-this.x,dy=mouse.y-this.y,d=Math.hypot(dx,dy);
+    if(d<160){const f=(160-d)/160,a=Math.atan2(dy,dx);this.vx-=Math.cos(a)*f*.4;this.vy-=Math.sin(a)*f*.4;}
+    this.vx+=(Math.random()-.5)*.025;this.vy+=(Math.random()-.5)*.025;
+    this.vx*=.97;this.vy*=.97;this.x+=this.vx;this.y+=this.vy;this.age++;
+    if(this.age<40)this.alpha=this.age/40*.22;
+    else if(this.age>this.life-40)this.alpha=(this.life-this.age)/40*.2;
+    else this.alpha=.18;
+    if(this.age>=this.life||this.x<-50||this.x>W+50||this.y<-50||this.y>H+50)this.reset(1);
+  }
+  draw(){ctx.save();ctx.globalAlpha=this.alpha;ctx.fillStyle=this.col;ctx.shadowBlur=5;ctx.shadowColor=this.col;ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();ctx.restore();}
+}
+function initP(){parts=[];for(let i=0;i<60;i++)parts.push(new P());}
+function animP(){ctx.clearRect(0,0,W,H);parts.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animP);}
+window.addEventListener('resize',resize);
+window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
+window.addEventListener('mouseleave',()=>{mouse.x=-9e4;mouse.y=-9e4;});
+resize();initP();animP();
+
+/* ── NAV THEME ── */
+const nav=document.getElementById('navbar');
+const DARK_PAGES=['home','lookbook','collections'];
+function setNavTheme(page){
+  const isDark=DARK_PAGES.includes(page)||page==='about';
+  nav.className=isDark?'dark':'light';
+  if(window.scrollY>60)nav.classList.add('scrolled');
+}
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>60);
+});
+
+/* ── PAGES ── */
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===name));
+  setNavTheme(name);
+  setTimeout(()=>{
+    document.querySelectorAll('#page-'+name+' .rv, #page-'+name+' .rv-left').forEach(el=>{
+      const ob=new IntersectionObserver(en=>{
+        en.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ob.unobserve(e.target);}});
+      },{threshold:.1});
+      ob.observe(el);
+    });
+  },80);
+}
+
+/* ── HAMBURGER ── */
+const hbg=document.getElementById('hamburger'),mob=document.getElementById('mobMenu');
+hbg.addEventListener('click',()=>{hbg.classList.toggle('open');mob.classList.toggle('open');document.body.style.overflow=mob.classList.contains('open')?'hidden':'';});
+function go(name){showPage(name);hbg.classList.remove('open');mob.classList.remove('open');document.body.style.overflow='';}
+
+/* ── MARQUEE ── */
+const mq=document.getElementById('mq');if(mq)mq.innerHTML+=mq.innerHTML;
+
+/* ── REVEAL ON LOAD ── */
+(function(){
+  const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ob.unobserve(e.target);}});},{threshold:.1});
+  document.querySelectorAll('.page.active .rv,.page.active .rv-left').forEach(el=>ob.observe(el));
+})();
+
+/* ── COLLECTION FILTER ── */
+function filterColl(cat,btn){
+  document.querySelectorAll('.coll-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.coll-item').forEach(c=>{
+    c.style.display=(cat==='all'||c.dataset.cat===cat)?'block':'none';
+  });
+}
+
+/* ── LIGHTBOX ── */
+function openLB(cell){
+  const img=cell.querySelector('img');
+  document.getElementById('lbImg').src=img.src.replace('w=700','w=1200').replace('w=1000','w=1400');
+  document.getElementById('lb').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLB(e){
+  if(!e||e.target===document.getElementById('lb')||e.target.classList.contains('lb-close')){
+    document.getElementById('lb').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
+document.querySelector('.lb-close').addEventListener('click',()=>closeLB());
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+
+/* ── FORMS ── */
+function handleOrder(btn){
+  btn.textContent='Sending...';btn.style.opacity='.7';
+  setTimeout(()=>{
+    btn.textContent='✓ Enquiry Received — We\'ll be in touch!';
+    btn.style.background='#27AE60';btn.style.opacity='1';
+    setTimeout(()=>{btn.textContent='Submit Enquiry';btn.style.background='';},5000);
+  },1500);
+}
+function handleContact(btn){
+  btn.textContent='Sending...';btn.style.opacity='.7';
+  setTimeout(()=>{
+    btn.textContent='✓ Message Sent!';
+    btn.style.background='#27AE60';btn.style.opacity='1';
+    setTimeout(()=>{btn.textContent='Send Message';btn.style.background='';},5000);
+  },1500);
+}
+</script>
+</body>
+</html>
